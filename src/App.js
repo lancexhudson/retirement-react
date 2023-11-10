@@ -34,6 +34,30 @@ function App() {
   const [postRetROR, setPostRetROR] = useState(initialPostRetROR);
   const [inflation, setInflation] = useState(initialInflation);
 
+  const formatter = new Intl.NumberFormat('en-us', {
+    style: 'currency',
+    currency: 'USD',
+    minimumFractionDigits: 2,
+  });
+
+  const calcRetirementAge = (updatedTargetRetAmt) => {
+    const netPreRetROR = (preRetROR - inflation) / 100;
+    let currentBalance = currentSavings;
+    const annualContributions =
+      contributionFreq === 'Annually' ? contributions : contributions * 12;
+    let retAge = currentAge;
+
+    while (currentBalance < updatedTargetRetAmt) {
+      currentBalance =
+        annualContributions + currentBalance * (1 + netPreRetROR);
+      retAge += 1;
+
+      if (retAge > 80) break;
+    }
+
+    return retAge;
+  };
+
   useEffect(() => {
     localStorage.setItem('retirementAge', retirementAge);
     localStorage.setItem('targetRetAmt', targetRetAmt);
@@ -45,6 +69,16 @@ function App() {
     localStorage.setItem('preRetROR', preRetROR);
     localStorage.setItem('postRetROR', postRetROR);
     localStorage.setItem('inflation', inflation);
+
+    let netPostROR = (postRetROR - inflation) / 100;
+
+    if (netPostROR === 0) netPostROR = 0.00001;
+
+    let updatedTargetRetAmt = annualRetExp / netPostROR;
+    setTargetRetAmt(updatedTargetRetAmt);
+
+    const retAge = calcRetirementAge(updatedTargetRetAmt);
+    setRetirementAge(retAge);
   }, [
     retirementAge,
     targetRetAmt,
@@ -62,7 +96,7 @@ function App() {
     <div className="App">
       <h1>Retirement Calculator</h1>
       <h2>You can retire at age {retirementAge}</h2>
-      <div>Target Retirement Amount: {targetRetirementAmt}</div>
+      <div>Target Retirement Amount: {formatter.format(targetRetAmt)}</div>
       <form className="fire-calc-form">
         <label>
           {' '}
@@ -104,8 +138,6 @@ function App() {
           {' '}
           Contribution Frequency
           <select name="" id="">
-            <option value="Weekly">Weekly</option>
-            <option value="Bi-Weekly">Bi-Weekly</option>
             <option value="Monthly">Monthly</option>
             <option value="Annually">Annually</option>
           </select>
