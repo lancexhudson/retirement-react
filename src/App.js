@@ -59,6 +59,7 @@ function App() {
   };
 
   useEffect(() => {
+    // localStorage.setItem('calcRetirementAge', calcRetirementAge);
     localStorage.setItem('retirementAge', retirementAge);
     localStorage.setItem('targetRetAmt', targetRetAmt);
     localStorage.setItem('annualRetExp', annualRetExp);
@@ -113,7 +114,7 @@ function App() {
           <input
             type="number"
             value={currentAge}
-            onChange={(e) => setCurrentAge(parseInt(e.target.value) || 0)}
+            onChange={(e) => setCurrentAge(parseInt(e.target.value) || 25)}
           />
         </label>
         <label>
@@ -122,29 +123,34 @@ function App() {
           <input
             type="number"
             value={currentSavings}
-            onChange={(e) => setCurrentSavings(parseInt(e.target.value) || 0)}
+            onChange={(e) => setCurrentSavings(parseInt(e.target.value))}
           />
         </label>
         <label>
           {' '}
-          Contribution Rate
+          Bi-Weekly Contribution Rate
           <input
             type="number"
             value={contributions}
-            onChange={(e) => setContributions(parseInt(e.target.value) || 0)}
+            onChange={(e) => setContributions(parseInt(e.target.value))}
           />
         </label>
-        <label>
+        {/* <label>
           {' '}
           Contribution Frequency
-          <select name="" id="">
+          <select
+            name=""
+            id=""
+            value={currentSavings}
+            onChange={(e) => setContributionFreq(parseInt(e.target.value))}
+          >
             <option value="Monthly">Monthly</option>
             <option value="Annually">Annually</option>
           </select>
-        </label>
+        </label> */}
         <div>
           <h2>Advanced</h2>
-          <label htmlFor="">
+          <label>
             Pre-Retirement Rate of Return
             <input
               type="number"
@@ -152,7 +158,7 @@ function App() {
               onChange={(e) => setPreRetROR(parseInt(e.target.value) || 0)}
             />
           </label>
-          <label htmlFor="">
+          <label>
             Post-Retirement Rate of Return
             <input
               type="number"
